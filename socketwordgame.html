@@ -1,0 +1,178 @@
+<html>
+<head>
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+  
+
+<div class="w-36 md:w-36 h-[27px] md:h-[27px] md:border border border-2 md:border-2 md:rounded-full rounded-full  md:border-sky-600 border-sky-600 absolute inline flex justify-around left-[-9px] mt-5 px-1 md:px-1 md:py-1 py-1 items-center">
+
+<p id="myscore"></p>
+</div>
+
+
+
+<div class="absolute md:absolute md:left-[47%]  left-[44%] top-3 right-[50%] w-12 md:w-12 md:h-[32px] h-[32px] md:border border md:border-sky-600 border-sky-600 px-1 py-1 md:px-1 md:py-1 items-center" >
+<p id="time"></p>
+</div>                   
+
+<div class="w-36 md:w-36 h-[27px] md:h-[27px] md:border border border-2 md:border-2 md:rounded-full rounded-full  md:border-sky-600 border-sky-600 absolute inline flex justify-around right-[-9px] mt-5 px-1 md:px-1 md:py-1 py-1 items-center">
+
+<p id="friendscore"></p>
+  
+</div>
+
+
+<div class="absolute bottom-[20rem] md:bottom-32 left-[20px] border-1  md:border border md:border-sky-600 border-sky-900 w-11/12 h-52 md:h-52 md:w-11/12 px-1 md:px-1 md:py-1 py-1  rounded-lg bg-cyan-5 drop-shadow-xl ">
+
+<p class="text-center text-blue-800 text-xl" id="randomString">apegsr</p>
+<div class="flex justify-center mt-3">
+            <input type="text"  class="bg-gray-50 border border-gray-300  text-sm rounded-lg focus:border-blue-500 focus:border-blue-500 block w-50 p-2.5 dark:bg-gray-700 dark:border-gray-600  dark:focus:ring-blue-500 dark:focus:border-blue-500 text-white" placeholder="John" id="inputs">
+              <button class="md:bg-blue-500 bg-blue-500 hover:bg-sky-700 text-white font-bold py-[1px] md:py-[1px] px-[4px] md:px-[4px] rounded" id="btn">
+check
+</button> </div>
+ </div>
+
+<div class="w-50 md:w-50 h-[27px] md:h-[27px] md:border border border-2 md:border-2 md:rounded-full rounded-full  md:border-sky-600 border-sky-600 absolute inline flex justify-around left-[-9px] md:bottom-16 bottom-[16rem] mt-5 px-1 md:px-1 md:py-1 py-1 items-center">
+<p id="joiningUser"></p>
+
+</div>
+
+<div class="flex justify-center items-center h-screen">
+   <h1 class="text-center text-2xl font-serif text-emerald-500 z-50" id="Wins"></h1>
+</div>
+
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+<script type="module">
+
+import { nanoid } from 'https://cdn.jsdelivr.net/npm/nanoid/nanoid.js'
+var idd=nanoid()
+//namespace
+let room="myroom"
+var socket1=io('/admin1');
+
+
+
+
+let myscore=document.querySelector("#myscore")
+let time=document.querySelector("#time")
+
+let friendScore=document.querySelector("#friendscore")
+let randomString=document.querySelector("#randomString")
+let inputs=document.querySelector("#inputs")
+
+let btn=document.querySelector("#btn")
+let joiningUser=document.querySelector("#joiningUser")
+let Wins=document.querySelector("#Wins")
+
+let joinedusername=prompt("Enter your name");
+
+if(joinedusername){
+socket1.emit("NewUserJoining",joinedusername);
+socket1.on("newuser",(joinedusername)=>{
+  joiningUser.innerText=`${joinedusername} Joined The Game`;
+})
+
+let counting=0;
+
+let str1={
+    rfstashi:"starfish",
+    apegsr:"grapes",
+   terah:"heart",
+   blwo:"bowl",
+   eckn:"neck",
+
+}
+//let str=["d","f","po","f"]
+
+
+btn.addEventListener('click',()=>{
+  if(str1[randomString.innerText]===inputs.value){
+    counting++;
+    console.log(counting)
+ myscore.innerText =`${counting} ${joinedusername}`;
+ socket1.emit("ad",counting)
+ let rand=Math.floor(Math.random() * 5)
+let keytext= Object.keys(str1)[rand];
+ randomString.innerText=keytext
+  }
+
+  socket1.on("se",(d,name)=>{
+    friendScore.textContent=`${d} ${name}`;
+})
+})
+
+let timing=setInterval(starttime,1000)
+let i=60
+function starttime(){
+  i--;
+  if(i==1){
+   
+   //score.textContent=`${ans.innerText},${broadcast.textContent}`;
+    var a=confirm("Do you want to stop the game");
+    a?(clearTimeout(timing), scoreDispl()):(i=30,score.innerText="");
+    //clearTimeout(timint),score.innerText=""
+}
+document.querySelector("#time").innerHTML=i;
+}
+
+
+
+
+function scoreDispl(){
+  let a=joinedusername.length
+  let name1=myscore.innerText.slice(0,a+2)
+  let name2=friendScore.textContent.slice(0,a+2)
+
+if(name1.slice(0,1)>name2.slice(0,1))
+{
+  Wins.textContent=`${name1.slice(1,5+2)} Wins!!`;
+console.log(name1.slice(1,5+2))    
+    }
+    else if(name1.slice(0,1)===name2.slice(0,1)){
+      Wins.textContent="Draw !!";
+console.log(name1.slice(1,5+2))    
+    }
+   else
+{
+  Wins.textContent=`${name2.slice(1,5+2)} Wins!!`
+console.log(name2.slice(1,5+2))    
+    }
+
+
+  //score.textContent=`${ans.innerText},${broadcast.textContent}`; 
+}
+
+
+
+}
+else{
+  Wins.textContent="Please provide your name to get started";
+console.log("not users")
+}
+
+
+
+
+
+</script>
+</body>
+
+
+
+</html>
+
+
